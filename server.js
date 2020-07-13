@@ -5,8 +5,12 @@ if (process.env.NODE_ENV !== 'production') {
 const express = require('express');
 const app = express();
 const expressLayouts = require('express-ejs-layouts');
+const bodyParser = require('body-parser');
+
 // Import the router from index.js
 const indexRouter = require('./routes/index');
+// Import the authors route
+const authorRouter = require('./routes/authors');
 
 // Set the view template
 app.set('view engine', 'ejs');
@@ -22,6 +26,8 @@ app.use(expressLayouts);
 
 // Where the public files are going to be (HTML, CSS, JavaScript...)
 app.use(express.static('public'));
+
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: false}));
 
 // Import mongoose to connect to MongoDB
 const mongoose = require('mongoose');
@@ -40,6 +46,7 @@ db.once('open', () => console.log('Connected to Mongoose'));
 
 // Tell the server which router handles this route /
 app.use('/', indexRouter);
+app.use('/authors', authorRouter);
 
 // Listen to port 3000 
 app.listen(process.env.PORT || 3000);
